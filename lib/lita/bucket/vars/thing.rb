@@ -3,11 +3,14 @@ require_relative 'base'
 module Bucket
   class Vars
     class Thing < RedisVar
-      attr_reader :key, :redis
+      attr_reader :key
 
       def initialize
         @key = Inventory::HISTORY_KEY
-        @redis = Inventory.redis
+      end
+
+      def redis
+        Inventory.redis
       end
     end
   end
