@@ -11,9 +11,9 @@ module Bucket
     end
 
     def match(message)
+      normalized_message = message.downcase
       triggers = redis.keys
-      puts triggers.inspect
-      key = triggers.select {|trigger| message.include?(trigger) }.sample
+      key = triggers.select {|trigger| normalized_message.include?(trigger.downcase) }.sample
       redis.srandmember(key)
     end
 
