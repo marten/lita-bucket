@@ -8,6 +8,9 @@ module Lita
       route(/^var \$(?<key>[a-zA-Z]+)$/, :get, command: true)
       route(/^var \$(?<key>[a-zA-Z]+) \+= (?<val>.+)/, :add, command: true)
 
+      # Doesn't work, collides with other handlers
+      # route(/^(?!(var)).+\$/i, :fill)
+
       def list(response)
         response.reply("I can fill in these variables: #{vars.list.sort.to_sentence}")
       end
@@ -37,6 +40,18 @@ module Lita
           response.reply("That's not a real thing!")
         end
       end
+
+      def fill(response)
+        requested_vars = response.message.body.scan(/\$\w+/)
+
+        if requested_vars.all? {|i| vars.list.include?(i) }
+          renderer = Bucket::Renderer.new(vars)
+          reply    = "yeah, " + renderer.render(response.message.body)
+          response.reply(reply)
+        end
+      end
+
+      private
 
       def vars
         @vars ||= Bucket::Vars.new

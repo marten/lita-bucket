@@ -11,7 +11,10 @@ module Bucket
     end
 
     def match(message)
-      redis.srandmember(message)
+      triggers = redis.keys
+      puts triggers.inspect
+      key = triggers.select {|trigger| message.include?(trigger) }.sample
+      redis.srandmember(key)
     end
 
     def match_all(message)

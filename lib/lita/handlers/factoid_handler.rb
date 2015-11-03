@@ -3,6 +3,8 @@ module Lita
     class FactoidHandler < Handler
       using Bucket::Refinements
 
+      config :chance, default: 0.4
+
       # insert handler code here
       route(/^literal (?<trigger>.*)$/, :get, command: true)
       route(/^(?<trigger>.*) => (?<retort>.*)$/, :add, command: true)
@@ -27,6 +29,8 @@ module Lita
       end
 
       def match(response)
+        return unless rand < config.chance
+
         if retort = factoids.match(response.message.body)
           vars = Bucket::Vars.new
           renderer = Bucket::Renderer.new(vars)
