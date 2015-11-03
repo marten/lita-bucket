@@ -29,7 +29,7 @@ module Lita
       end
 
       def match(response)
-        return unless rand < config.chance
+        return unless response.message.command? || rand < config.chance
 
         if retort = factoids.match(response.message.body)
           vars = Bucket::Vars.new
