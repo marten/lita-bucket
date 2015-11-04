@@ -39,7 +39,7 @@ module Lita
       end
 
       def random_response(payload)
-        return unless rand < config.chance
+        return unless Bucket.random_generator.call < config.chance
 
         message = payload[:message]
         if retort = factoids.match(message.body)

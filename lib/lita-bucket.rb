@@ -8,6 +8,14 @@ module Bucket
   def self.redis
     Redis::Namespace.new("handlers:bucket", redis: Lita.redis)
   end
+
+  def self.random_generator
+    @random_generator ||= lambda { rand }
+  end
+
+  def self.random_generator=(generator)
+    @random_generator = generator
+  end
 end
 
 require "lita/bucket/refinements"
