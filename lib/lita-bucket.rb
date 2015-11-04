@@ -32,6 +32,7 @@ require "lita/bucket/vars/redis_var"
 require "lita/bucket/vars/room"
 require "lita/bucket/vars/thing"
 require "lita/bucket/vars/vehicle"
+require "lita/bucket/vars/who"
 require "lita/bucket/vars"
 
 require 'lita/bucket/renderer'

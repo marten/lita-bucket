@@ -32,7 +32,7 @@ module Lita
 
       def match(response)
         if retort = factoids.match_exact(response.message.body)
-          vars = Bucket::Vars.new
+          vars = Bucket::Vars.new('who' => Bucket::Vars::Who.new(response.message.source.user))
           renderer = Bucket::Renderer.new(vars)
           response.reply(renderer.render(retort))
         end
@@ -43,7 +43,7 @@ module Lita
 
         message = payload[:message]
         if retort = factoids.match(message.body)
-          vars = Bucket::Vars.new
+          vars = Bucket::Vars.new('who' => Bucket::Vars::Who.new(message.source.user))
           renderer = Bucket::Renderer.new(vars)
           target = message.source
           robot.send_message(target, renderer.render(retort))
