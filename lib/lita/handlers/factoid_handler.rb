@@ -8,14 +8,16 @@ module Lita
       # insert handler code here
       route(/^literal (?<trigger>.*)$/, :get, command: true)
       route(/^(?<trigger>.*) => (?<retort>.*)$/, :add, command: true)
-      route(/^.*$/, :match)
+      route(/^(?<trigger>.*)$/, :match, command: true)
+
+      on :unhandled_message, :random_response
 
       def get(response)
         trigger = response.match_data[:trigger].strip
         retorts = factoids.match_all(trigger)
 
         if retorts.any?
-          response.reply(retorts.join("\n"))
+          response.reply(retorts.map.with_index{|msg, idx| "[#{idx}] #{msg}"}.join("\n"))
         else
           response.reply("Aint got a thing for that.")
         end
@@ -29,12 +31,22 @@ module Lita
       end
 
       def match(response)
-        return unless response.message.command? || rand < config.chance
-
-        if retort = factoids.match(response.message.body)
+        if retort = factoids.match_exact(response.message.body)
           vars = Bucket::Vars.new
           renderer = Bucket::Renderer.new(vars)
           response.reply(renderer.render(retort))
+        end
+      end
+
+      def random_response(payload)
+        return unless rand < config.chance
+
+        message = payload[:message]
+        if retort = factoids.match(message.body)
+          vars = Bucket::Vars.new
+          renderer = Bucket::Renderer.new(vars)
+          target = message.source
+          robot.send_message(target, renderer.render(retort))
         end
       end
 

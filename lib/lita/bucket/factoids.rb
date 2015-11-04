@@ -17,6 +17,11 @@ module Bucket
       redis.srandmember(key)
     end
 
+    def match_exact(message)
+      normalized_message = message.downcase
+      redis.srandmember(normalized_message)
+    end
+
     def match_all(message)
       redis.smembers(message)
     end
