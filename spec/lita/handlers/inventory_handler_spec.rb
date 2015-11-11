@@ -31,7 +31,7 @@ describe Lita::Handlers::InventoryHandler, lita_handler: true do
       send_command("take someone's bad joke")
       send_command("take some json data")
       send_command("inventory?")
-      expect(replies.last).to eq("contains some json data, someone's bad joke, and a hammer.")
+      expect(replies.last).to eq("contains a hammer, some json data, and someone's bad joke.")
     end
   end
 

@@ -31,6 +31,7 @@ describe Lita::Handlers::FactoidHandler, lita_handler: true do
   end
 
   it 'works with question marks' do
+    pending
     send_command "foo? => BAR"
     send_message "fo"
     expect(replies.last).not_to eq("BAR")
