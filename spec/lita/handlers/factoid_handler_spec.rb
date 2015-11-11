@@ -30,4 +30,13 @@ describe Lita::Handlers::FactoidHandler, lita_handler: true do
     expect(replies.last).not_to eq("BAR")
   end
 
+  it 'works with question marks' do
+    send_command "foo? => BAR"
+    send_message "fo"
+    expect(replies.last).not_to eq("BAR")
+    send_message "foo"
+    expect(replies.last).not_to eq("BAR")
+    send_message "foo?"
+    expect(replies.last).to eq("BAR")
+  end
 end

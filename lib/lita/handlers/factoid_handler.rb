@@ -5,7 +5,7 @@ module Lita
 
       config :chance, default: 0.4
 
-      # insert handler code here
+      route(/^stfu$/i, :stfu, command: true)
       route(/^literal (?<trigger>.*)$/, :get, command: true)
       route(/^(?<trigger>.*) => (?<retort>.*)$/, :add, command: true)
       route(/^(?<trigger>.*)$/, :match, command: true)
@@ -39,7 +39,8 @@ module Lita
       end
 
       def random_response(payload)
-        return unless Bucket.random_generator.call < config.chance
+        # return unless Bucket.random_generator.call < config.chance
+        return if stfu?
 
         message = payload[:message]
         if retort = factoids.match(message.body)
@@ -48,6 +49,22 @@ module Lita
           target = message.source
           robot.send_message(target, renderer.render(retort))
         end
+      end
+
+      def stfu(response)
+        stfu!
+        response.reply("Ok, ok, I can tell when I'm not wanted... :(")
+      end
+
+      private
+
+      def stfu?
+        timeout = redis.get(:stfu)
+        Time.at(timeout.to_i) > Time.now if timeout
+      end
+
+      def stfu!(seconds = 60*60)
+        redis.set(:stfu, (Time.now + seconds).to_i)
       end
 
       def factoids
