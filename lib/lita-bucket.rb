@@ -40,6 +40,7 @@ require 'lita/bucket/renderer'
 require "lita/handlers/inventory_handler"
 require "lita/handlers/var_handler"
 require 'lita/handlers/factoid_handler'
+require 'lita/handlers/dice_handler'
 
 Lita::Handlers::InventoryHandler.template_root File.expand_path(
   File.join("..", "..", "templates"),
