@@ -18,20 +18,19 @@ describe Lita::Handlers::FactoidHandler, lita_handler: true do
     expect(replies.last).to eq("BAR")
   end
 
-  it 'normalizes uppercase' do
+  it 'normalizes apostrophes' do
     send_command "it's random => BAR"
     send_message "something its random something"
     expect(replies.last).to eq("BAR")
   end
 
-  it 'requires a word boundary uppercase' do
+  it 'requires a word boundary' do
     send_command "foo => BAR"
     send_message "something foosball something"
     expect(replies.last).not_to eq("BAR")
   end
 
   it 'works with question marks' do
-    pending
     send_command "foo? => BAR"
     send_message "fo"
     expect(replies.last).not_to eq("BAR")

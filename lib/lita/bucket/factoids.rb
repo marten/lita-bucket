@@ -11,20 +11,36 @@ module Bucket
     end
 
     def match(message)
-      normalized_message = normalize(message)
       triggers = redis.keys
-      key = triggers.select {|trigger| normalized_message =~ /\b#{normalize(trigger)}\b/ }.sample
+      key = triggers.select {|trigger| matches?(normalize(trigger), normalize(message)) }.sample
       redis.srandmember(key)
     end
 
     def match_exact(message)
-      normalized_message = normalize(message)
-      redis.srandmember(normalized_message)
+      redis.srandmember(normalize(message))
     end
 
     def match_all(message)
-      normalized_message = normalize(message)
-      redis.smembers(normalized_message)
+      redis.smembers(normalize(message))
+    end
+
+    private
+
+    def matches?(trigger, msg)
+      idx = msg.index(trigger)
+      if idx
+        pre = idx > 0 ? msg[idx-1] : nil
+        post = msg[idx + trigger.length]
+        word_boundary(pre) && word_boundary(post)
+      end
+    end
+
+    def word_boundary(char)
+      case char
+      when nil then true
+      when ' ' then true
+      else false
+      end
     end
 
     def normalize(message)
