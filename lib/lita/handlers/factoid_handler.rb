@@ -3,7 +3,7 @@ module Lita
     class FactoidHandler < Handler
       using Bucket::Refinements
 
-      config :chance, default: 0.4
+      config :chance,  default: 0.4
 
       route(/^stfu$/i, :stfu, command: true)
       route(/^literal (?<trigger>.*)$/, :get, command: true)
@@ -39,7 +39,7 @@ module Lita
       end
 
       def random_response(payload)
-        # return unless Bucket.random_generator.call < config.chance
+        return unless Bucket.random_generator.call < config.chance
         return if stfu?
 
         message = payload[:message]
