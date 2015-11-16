@@ -37,7 +37,9 @@ module Bucket
       # 'hex' => Var.new(redis, 'hex')
 
       # Custom
-      'thing' => Thing.new
+      'thing' => Thing.new,
+      'item' => Item.new,
+      'giveitem' => GiveItem.new
     }
 
     attr_reader :vars
