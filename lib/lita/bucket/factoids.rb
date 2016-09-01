@@ -10,10 +10,19 @@ module Bucket
       redis.sadd(normalize(trigger), retort)
     end
 
+    def remove(trigger, retort)
+      normalized_trigger = normalize(trigger)
+
+      redis.srem(normalized_trigger, retort)
+      if redis.scard(normalized_trigger) == 0
+        redis.del(normalized_trigger)
+      end
+    end
+
     def match(message)
       triggers = redis.keys
       key = triggers.select {|trigger| matches?(normalize(trigger), normalize(message)) }.sample
-      redis.srandmember(key)
+      [key, redis.srandmember(key)]
     end
 
     def match_exact(message)
